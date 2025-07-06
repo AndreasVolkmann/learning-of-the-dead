@@ -1,3 +1,5 @@
+import dictionary.DictionaryEntry
+
 fun main() {
     val decoder = TypingOfTheDeadDecoder()
     val entries = decoder.decodeDictionary("data/S000L010.bin")

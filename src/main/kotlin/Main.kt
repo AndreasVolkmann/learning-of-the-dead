@@ -1,6 +1,4 @@
 import java.io.File
-import java.nio.ByteBuffer
-import java.nio.ByteOrder
 import java.nio.charset.Charset
 
 data class DictionaryEntry(
@@ -41,84 +39,95 @@ class TypingOfTheDeadDecoder {
         val file = File(filePath)
         val bytes = file.readBytes()
         val entries = mutableListOf<DictionaryEntry>()
-        
-        // Read TOC
+
+        // Read TOC - each entry is 12 bytes (3 x 4-byte values)
         var tocOffset = 0
-        while (tocOffset < bytes.size - 3) {
+        while (tocOffset + 11 < bytes.size) {
             // Check for EOF marker (FF FF FF FF)
-            if (bytes[tocOffset] == 0xFF.toByte() && 
-                bytes[tocOffset + 1] == 0xFF.toByte() && 
-                bytes[tocOffset + 2] == 0xFF.toByte() && 
-                bytes[tocOffset + 3] == 0xFF.toByte()) {
+            if (bytes[tocOffset] == 0xFF.toByte() &&
+                bytes[tocOffset + 1] == 0xFF.toByte() &&
+                bytes[tocOffset + 2] == 0xFF.toByte() &&
+                bytes[tocOffset + 3] == 0xFF.toByte()
+            ) {
                 break
             }
-            
-            // Read 12-byte TOC entry
-            val timeGauge = readInt24(bytes, tocOffset)
-            val phraseOffset = readInt24(bytes, tocOffset + 4)
-            val keycodeOffset = readInt24(bytes, tocOffset + 8)
-            
-            if (phraseOffset > 0) {
-                // Read phrase
-                val phrase = readPhrase(bytes, phraseOffset)
-                
-                // Read keycodes
-                val keycodes = readKeycodes(bytes, keycodeOffset)
-                
-                entries.add(DictionaryEntry(timeGauge, phraseOffset, keycodeOffset, phrase, keycodes))
-            }
-            
+
+            // Read the three 4-byte values
+            val timeGauge = readInt32(bytes, tocOffset)
+            val phraseOffset = readInt32(bytes, tocOffset + 4)
+            val keycodeOffset = readInt32(bytes, tocOffset + 8)
+
+            // Read phrase and keycodes if offsets are valid
+            val phrase = if (phraseOffset > 0 && phraseOffset < bytes.size) {
+                readPhrase(bytes, phraseOffset)
+            } else ""
+
+            val keycodes = if (keycodeOffset > 0 && keycodeOffset < bytes.size) {
+                readKeycodes(bytes, keycodeOffset)
+            } else emptyList()
+
+            entries.add(DictionaryEntry(timeGauge, phraseOffset, keycodeOffset, phrase, keycodes))
             tocOffset += 12
         }
-        
+
         return entries
     }
-    
-    private fun readInt24(bytes: ByteArray, offset: Int): Int {
-        // Read 3 bytes with swapped endianness
-        return (bytes[offset + 2].toInt() and 0xFF) or
-               ((bytes[offset + 1].toInt() and 0xFF) shl 8) or
-               ((bytes[offset].toInt() and 0xFF) shl 16)
+
+    private fun readInt32(bytes: ByteArray, offset: Int): Int {
+        // Read 4 bytes in little-endian order
+        return (bytes[offset].toInt() and 0xFF) or
+                ((bytes[offset + 1].toInt() and 0xFF) shl 8) or
+                ((bytes[offset + 2].toInt() and 0xFF) shl 16) or
+                ((bytes[offset + 3].toInt() and 0xFF) shl 24)
     }
-    
+
     private fun readPhrase(bytes: ByteArray, offset: Int): String {
         val phraseBytes = mutableListOf<Byte>()
         var i = offset
-        
-        // Read until we hit 0x00
-        while (i < bytes.size && bytes[i] != 0x00.toByte()) {
+
+        // Read until we hit 0x00 or 0xFF
+        while (i < bytes.size && bytes[i] != 0x00.toByte() && bytes[i] != 0xFF.toByte()) {
             phraseBytes.add(bytes[i])
             i++
         }
-        
-        return String(phraseBytes.toByteArray(), shiftJIS)
+
+        return if (phraseBytes.isNotEmpty()) {
+            String(phraseBytes.toByteArray(), shiftJIS)
+        } else ""
     }
-    
+
     private fun readKeycodes(bytes: ByteArray, offset: Int): List<String> {
         val keycodes = mutableListOf<String>()
         var i = offset
-        
+
         // Read until we hit 0x00
         while (i < bytes.size && bytes[i] != 0x00.toByte()) {
-            val keycode = keycodeMap[bytes[i]] ?: "?"
-            keycodes.add(keycode)
+            val keycode = keycodeMap[bytes[i]]
+            if (keycode != null) {
+                keycodes.add(keycode)
+            } else {
+                // Handle unknown keycodes
+                keycodes.add("?")
+            }
             i++
         }
-        
+
         return keycodes
     }
 }
 
 fun main() {
     val decoder = TypingOfTheDeadDecoder()
-    
+
     // Decode the dictionary file
     val entries = decoder.decodeDictionary("data/S000L010.bin")
-    
-    // Print results
-    entries.forEachIndexed { index, entry ->
+
+    // Print results - only show entries with content
+    entries.filter { it.phrase.isNotEmpty() || it.keycodes.isNotEmpty() }.forEachIndexed { index, entry ->
         println("Entry $index:")
         println("  Time Gauge: 0x${entry.timeGauge.toString(16)}")
+        println("  Phrase Offset: 0x${entry.phraseOffset.toString(16)}")
+        println("  Keycode Offset: 0x${entry.keycodeOffset.toString(16)}")
         println("  Phrase: ${entry.phrase}")
         println("  Keycodes: ${entry.keycodes.joinToString("")}")
         println()

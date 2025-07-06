@@ -1,0 +1,22 @@
+There's a catalog at top that has the start and stop positions for the phrase in the bubble followed bysome 4 byte ? and repeating. 
+When you get down to the phrases you find they're in Shift-JIS and following is a weird custom alphabet table used internally for the translation to keycodes.
+I was able to see that there's wide font support and that the trailing set of codes is necessary but rewriting all the dictionaries will be painful, and there's needing to fix the wide font.
+
+The dictionary is compromised of 2 parts, the TOC and then the phrase. The TOC is split into 4 byte chunks with three parts:
+## 00 00 00 First number in hex is some time gauge used for the rating. I'm not really sure how it translates to real-world time but it is a hex representation of something. I didn't look much further into this .
+## 00 00 00 This can actually fill up the entire block but this is where the hex offset in the file the phrase begins. Endian is swapped as well so 104 is 0x04 0x01
+## 00 00 00 Again this can fill up the entire block and this is the hex offset where the key codes start and endianess is swapped like phrases
+FF FF FF FF EOF
+
+A phrase is setup as such:
+PHRASE 00 FF KEYMAP 00 FF FF PHRASE 00 FF KEYMAP 00 FF FF etc, etc only the phrase offset is needed and the keymap is read automatically to the 00. The last phrase does not need FF FF appended
+
+And here is a json array of the 4 formats which should make automating translating the US dictionaries rather painless.
+
+{
+"shiftjis": [ "０","１","２","３","４","５","６","７","８","９","Ａ","Ｂ","Ｃ","Ｄ","Ｅ","Ｆ","Ｇ","Ｈ","Ｉ","Ｊ","Ｋ","Ｌ","Ｍ","Ｎ","Ｏ","Ｐ","Ｑ","Ｒ","Ｓ","Ｔ","Ｕ","Ｖ","Ｗ","Ｘ","Ｙ","Ｚ","ａ","ｂ","ｃ","ｄ","ｅ","ｆ","ｇ","ｈ","ｉ","ｊ","ｋ","ｌ","ｍ","ｎ","ｏ","ｐ","ｑ","ｒ","ｓ","ｔ","ｕ","ｖ","ｗ","ｘ","ｙ","ｚ","￥","。","、","？","！","＿","「","」","?","[","％","　","’","＄","＃","＠","．","，","−" ],
+"shiftjishex": [ "824F","8250","8251","8252","8253","8254","8255","8256","8257","8258","8260","8261","8262","8263","8264","8265","8266","8267","8268","8269","826A","826B","826C","826D","826E","826F","8270","8271","8272","8273","8274","8275","8276","8277","8278","8279","8280","8281","8282","8283","8284","8285","8286","8287","8288","8289","828A","828B","828C","828D","828E","828F","8290","8291","8292","8293","8294","8295","8296","8297","8298","8299","829A","818F","8142","8141","8148","8149","8151","8175","8176","815B","8193","8140","8166","8190","8194","8197","8144","8143","817C" ],
+"ascii": [ "0","1","2","3","4","5","6","7","8","9","A","B","C","D","E","F","G","H","I","J","K","L","M","N","O","P","Q","R","S","T","U","V","W","X","Y","Z","a","b","c","d","e","f","g","h","i","j","k","l","m","n","o","p","q","r","s","t","u","v","w","x","y","z","","","","","!","_","","","?","","%"," ","'","$","#","@",".",",","-" ],
+"keycodes": [ "A1","A2","A3","A4","A5","A6","A7","A8","A9","AA","AB","AC","AD","AE","AF","B0","B1","B2","B3","B4","B5","B6","B7","B8","B9","BA","BB","BC","BB","BD","BE","BF","C0","C1","C2","C3","C4","C5","C6","C7","C8","C9","CA","CB","CC","CD","CE","CF","D0","D1","D2","D3","D4","D5","D6","D7","D8","D9","DA","DB","DC","DD","DE","DF","E0","E1","E2","E3","E4","E5","E6","E7","E8","E9","EA","EB","EC","ED","EE","EF","F0" ] 
+}
+

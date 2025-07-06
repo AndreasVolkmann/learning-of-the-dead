@@ -46,6 +46,20 @@ class TypingOfTheDeadDecoderTest {
         )
         assertEntry(entry, expected, "Entry $index")
     }
+    
+    @Test
+    fun decodeChu() {
+        val index = 781
+        val entry = entriesL020[index]
+        val expected = ExpectedEntry(
+            timeGauge = 29,
+            phraseOffset = 19172,
+            keycodeOffset = 19180,
+            phrase = "予兆",
+            keycodes = listOf("yo", "ch", "u")
+        )
+        assertEntry(entry, expected, "Entry $index")
+    }
 
     @Test
     fun decodeNumbers() {

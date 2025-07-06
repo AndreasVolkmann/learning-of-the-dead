@@ -35,7 +35,7 @@ class TypingOfTheDeadDecoder {
 
         0x99.toByte() to "っ", // Double consonant marker (っ/ッ)
         0x01.toByte() to "k", 0x05.toByte() to "y", 0x06.toByte() to "sya", 0x08.toByte() to "syu",
-        0x0A.toByte() to "s", 0x0F.toByte() to "c", 0x10.toByte() to "n", 0x12.toByte() to "n",
+        0x0A.toByte() to "s", 0x0F.toByte() to "ch", 0x10.toByte() to "n", 0x12.toByte() to "n",
         0x1E.toByte() to "m", 0x1F.toByte() to "g", 0x21.toByte() to "g", 0x24.toByte() to "j",
         0x32.toByte() to "j", 0x3A.toByte() to "r", 0x3C.toByte() to "r", 0x3E.toByte() to "f",
         0x45.toByte() to "t", 0x47.toByte() to "d",

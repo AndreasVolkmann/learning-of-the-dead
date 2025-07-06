@@ -5,5 +5,6 @@ data class DictionaryEntry(
     val phraseOffset: Int,
     val keycodeOffset: Int,
     val phrase: String,
-    val keycodes: List<String>
+    val keycodes: List<String>,
+    val keycodeBytes: List<Byte>
 )

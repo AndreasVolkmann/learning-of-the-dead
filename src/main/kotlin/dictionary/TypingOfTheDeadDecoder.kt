@@ -7,9 +7,9 @@ class TypingOfTheDeadDecoder {
     private val shiftJIS = Charset.forName("Shift-JIS")
     
     private val keycodeMap = mapOf(
-        0xA1.toByte() to "0", 0xA2.toByte() to "1", 0xA3.toByte() to "2", 0xA4.toByte() to "3",
-        0xA5.toByte() to "4", 0xA6.toByte() to "5", 0xA7.toByte() to "6", 0xA8.toByte() to "7",
-        0xA9.toByte() to "8", 0xAA.toByte() to "9",
+        0xA3.toByte() to "1", 0xA4.toByte() to "2",
+        0xA5.toByte() to "3", 0xA6.toByte() to "4", 0xA7.toByte() to "5", 0xA8.toByte() to "6",
+        0xA9.toByte() to "7", 0xAA.toByte() to "8",
         
         0xAB.toByte() to "A", 0xAC.toByte() to "B",
         0xAD.toByte() to "C", 0xAE.toByte() to "D", 0xAF.toByte() to "E", 0xB0.toByte() to "F",
@@ -145,11 +145,11 @@ class TypingOfTheDeadDecoder {
                 readPhrase(bytes, phraseOffset)
             } else ""
 
-            val keycodes = if (keycodeOffset > 0 && keycodeOffset < bytes.size) {
+            val (keycodes, keycodeBytes) = if (keycodeOffset > 0 && keycodeOffset < bytes.size) {
                 readKeycodes(bytes, keycodeOffset, phrase)
-            } else emptyList()
+            } else Pair(emptyList(), emptyList())
 
-            entries.add(DictionaryEntry(timeGauge, phraseOffset, keycodeOffset, phrase, keycodes))
+            entries.add(DictionaryEntry(timeGauge, phraseOffset, keycodeOffset, phrase, keycodes, keycodeBytes))
             tocOffset += 12
         }
 
@@ -179,25 +179,28 @@ class TypingOfTheDeadDecoder {
         } else ""
     }
 
-    private fun readKeycodes(bytes: ByteArray, offset: Int, currentPhrase: String): List<String> {
+    private fun readKeycodes(bytes: ByteArray, offset: Int, currentPhrase: String): Pair<List<String>, List<Byte>> {
         val keycodes = mutableListOf<String>()
+        val keycodeBytes = mutableListOf<Byte>()
         var i = offset
         var keycodeIndex = 0
 
         // Read until we hit 0x00
         while (i < bytes.size && bytes[i] != 0x00.toByte()) {
-            val keycode = keycodeMap[bytes[i]]
+            val byte = bytes[i]
+            keycodeBytes.add(byte)
+            val keycode = keycodeMap[byte]
             if (keycode != null) {
                 keycodes.add(keycode)
             } else {
                 // Debug unknown keycodes
-                println("Unknown keycode at offset 0x${i.toString(16)}: 0x${"%02X".format(bytes[i])} for phrase: '$currentPhrase' ($keycodeIndex)")
+                println("Unknown keycode at offset 0x${i.toString(16)}: 0x${"%02X".format(byte)} for phrase: '$currentPhrase' ($keycodeIndex)")
                 keycodes.add("?")
             }
             i++
             keycodeIndex++
         }
 
-        return keycodes
+        return Pair(keycodes, keycodeBytes)
     }
 }

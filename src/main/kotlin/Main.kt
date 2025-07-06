@@ -14,5 +14,6 @@ private fun print(index: Int, entry: DictionaryEntry) {
     println("  Keycode Offset: 0x${entry.keycodeOffset.toString(16)}")
     println("  Phrase: ${entry.phrase}")
     println("  Keycodes: ${entry.keycodes.joinToString("")}")
+    println("  Keycode Bytes: ${entry.keycodeBytes.joinToString(" ") { "0x%02X".format(it) }}")
     println()
 }

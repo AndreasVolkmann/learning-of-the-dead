@@ -12,7 +12,6 @@ data class DictionaryEntry(
 class TypingOfTheDeadDecoder {
     private val shiftJIS = Charset.forName("Shift-JIS")
     
-    // Keycode mapping from the provided JSON
     private val keycodeMap = mapOf(
         0xA1.toByte() to "0", 0xA2.toByte() to "1", 0xA3.toByte() to "2", 0xA4.toByte() to "3",
         0xA5.toByte() to "4", 0xA6.toByte() to "5", 0xA7.toByte() to "6", 0xA8.toByte() to "7",
@@ -29,12 +28,14 @@ class TypingOfTheDeadDecoder {
         0xD1.toByte() to "m", 0xD2.toByte() to "n", 0xD3.toByte() to "o", 0xD4.toByte() to "p",
         0xD5.toByte() to "q", 0xD6.toByte() to "r", 0xD7.toByte() to "s", 0xD8.toByte() to "t",
         0xD9.toByte() to "u", 0xDA.toByte() to "v", 0xDB.toByte() to "w", 0xDC.toByte() to "x",
-        0xDD.toByte() to "y", 0xDE.toByte() to "z", 0xE3.toByte() to "!", 0xE4.toByte() to "_",
-        0xE7.toByte() to "?", 0xE9.toByte() to "%", 0xEA.toByte() to " ", 0xEB.toByte() to "'",
-        0xEC.toByte() to "$", 0xED.toByte() to "#", 0xEE.toByte() to "@", 0xEF.toByte() to ".",
-        0xF0.toByte() to ",", 0xF1.toByte() to "-"
+        0xDD.toByte() to "y", 0xDE.toByte() to "z", 
+        0xDF.toByte() to "", 0xE0.toByte() to "", 0xE1.toByte() to "", 0xE2.toByte() to "",
+        0xE3.toByte() to "!", 0xE4.toByte() to "_", 0xE5.toByte() to "", 0xE6.toByte() to "",
+        0xE7.toByte() to "?", 0xE8.toByte() to "", 0xE9.toByte() to "%", 0xEA.toByte() to " ",
+        0xEB.toByte() to "'", 0xEC.toByte() to "$", 0xED.toByte() to "#", 0xEE.toByte() to "@",
+        0xEF.toByte() to ".", 0xF0.toByte() to ",", 0xF1.toByte() to "-"
     )
-    
+
     fun decodeDictionary(filePath: String): List<DictionaryEntry> {
         val file = File(filePath)
         val bytes = file.readBytes()
@@ -106,7 +107,8 @@ class TypingOfTheDeadDecoder {
             if (keycode != null) {
                 keycodes.add(keycode)
             } else {
-                // Handle unknown keycodes
+                // Debug unknown keycodes
+                println("Unknown keycode at offset 0x${i.toString(16)}: 0x${"%02X".format(bytes[i])}")
                 keycodes.add("?")
             }
             i++

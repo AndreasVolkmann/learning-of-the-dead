@@ -2,27 +2,23 @@ import dictionary.DictionaryCommand
 import dictionary.DictionaryEntry
 import dictionary.DictionaryDecoder
 import dictionary.DictionaryEncoder
+import dictionary.Entry
 import java.io.File
 
 fun main() {
     val file = "S000L010.bin"
     val newEntries = listOf(
-        DictionaryEntry(
+        Entry("標準", listOf("B", "i", "a", "o", "1", "Z", "H", "u", "N", "3")),
+        Entry(
             timeGauge = 15,
-            phraseOffset = 0,
-            keycodeOffset = 0,
             phrase = "あい",
             keycodes = listOf("a", "i"),
-            keycodeBytes = emptyList()
         ),
-        DictionaryEntry(
+        Entry(
             timeGauge = 20,
-            phraseOffset = 0,
-            keycodeOffset = 0,
             phrase = "酒乱",
-            keycodes = listOf("shu", "ra", "nn"),
-            keycodeBytes = emptyList()
-        )
+            keycodes = listOf("shu", "ra", "nn")
+        ),
     )
 
     generate(file, newEntries)
@@ -39,7 +35,7 @@ private fun extract(filePath: String) {
     println(result.lastValidTocOffset)
 }
 
-private fun generate(file: String, newEntries: List<DictionaryEntry>) {
+private fun generate(file: String, newEntries: List<Entry>) {
     val first12Bytes = File("data/${file}").readBytes().take(12)
     val newBytes = DictionaryEncoder().encode(newEntries)
 //    val bytes = ByteArray(12 + newBytes.size)

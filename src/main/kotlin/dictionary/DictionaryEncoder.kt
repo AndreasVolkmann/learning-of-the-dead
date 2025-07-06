@@ -3,7 +3,7 @@ package dictionary
 import java.io.ByteArrayOutputStream
 
 class DictionaryEncoder : Encoder() {
-    fun encode(entries: List<DictionaryEntry>): ByteArray {
+    fun encode(entries: List<Entry>): ByteArray {
         val outputStream = ByteArrayOutputStream()
         
         // Calculate offsets for phrases and keycodes

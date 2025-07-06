@@ -6,11 +6,13 @@ import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.TestFactory
 import java.io.File
 
-class TypingOfTheDeadDecoderTest {
-    private val decoder = TypingOfTheDeadDecoder()
-    private val entriesL010 = decoder.decodeDictionary("data/S000L010.bin")
-    private val entriesL020 = decoder.decodeDictionary("data/S000L020.bin")
+class DictionaryDecoderTest {
+    private val decoder = DictionaryDecoder()
+    private val entriesL010 = process("data/S000L010.bin")
+    private val entriesL020 = process("data/S000L020.bin")
 
+    private fun process(filePath: String) = decoder.process(DictionaryCommand(filePath)).entries
+    
     data class ExpectedEntry(
         val timeGauge: Int,
         val phraseOffset: Int,
@@ -101,7 +103,7 @@ class TypingOfTheDeadDecoderTest {
         val testFile = createTestFile()
 
         try {
-            val entries = decoder.decodeDictionary(testFile.path)
+            val entries = process(testFile.path)
 
             assertEquals(1, entries.size)
             assertEntry(

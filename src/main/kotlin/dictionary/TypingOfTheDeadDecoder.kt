@@ -29,12 +29,12 @@ class TypingOfTheDeadDecoder {
         
         0xDF.toByte() to "", 0xE0.toByte() to "", 0xE1.toByte() to "", 0xE2.toByte() to "",
         0xE3.toByte() to "!", 0xE4.toByte() to "_", 0xE5.toByte() to "", 0xE6.toByte() to "",
-        0xE7.toByte() to "?", 0xE8.toByte() to "", 0xE9.toByte() to "%", 0xEA.toByte() to " ",
+        0xE7.toByte() to "?", 0xE8.toByte() to "ー", 0xE9.toByte() to "%", 0xEA.toByte() to " ",
         0xEB.toByte() to "'", 0xEC.toByte() to "$", 0xED.toByte() to "#", 0xEE.toByte() to "@",
         0xEF.toByte() to ".", 0xF0.toByte() to ",", 0xF1.toByte() to "-",
 
         0x99.toByte() to "っ", // Double consonant marker (っ/ッ)
-        0x01.toByte() to "k", 0x05.toByte() to "y", 0x06.toByte() to "y", 0x08.toByte() to "syu",
+        0x01.toByte() to "k", 0x05.toByte() to "y", 0x06.toByte() to "sya", 0x08.toByte() to "syu",
         0x0A.toByte() to "s", 0x0F.toByte() to "c", 0x10.toByte() to "n", 0x12.toByte() to "n",
         0x1E.toByte() to "m", 0x1F.toByte() to "g", 0x21.toByte() to "g", 0x24.toByte() to "j",
         0x32.toByte() to "j", 0x3A.toByte() to "r", 0x3C.toByte() to "r", 0x3E.toByte() to "f",

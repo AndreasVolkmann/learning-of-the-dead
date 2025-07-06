@@ -1,4 +1,5 @@
 import dictionary.DictionaryEntry
+import dictionary.TypingOfTheDeadDecoder
 
 fun main() {
     val decoder = TypingOfTheDeadDecoder()

@@ -1,6 +1,6 @@
 package dictionary
 
-import TypingOfTheDeadDecoder
+import dictionary.TypingOfTheDeadDecoder
 import org.junit.jupiter.api.Assertions
 import org.junit.jupiter.api.Assertions.*
 import org.junit.jupiter.api.DynamicTest

@@ -1,4 +1,5 @@
-import dictionary.DictionaryEntry
+package dictionary
+
 import java.io.File
 import java.nio.charset.Charset
 

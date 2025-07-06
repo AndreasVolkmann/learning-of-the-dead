@@ -1,8 +1,6 @@
 package dictionary
 
-import dictionary.TypingOfTheDeadDecoder
-import org.junit.jupiter.api.Assertions
-import org.junit.jupiter.api.Assertions.*
+import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.DynamicTest
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.TestFactory
@@ -10,7 +8,8 @@ import java.io.File
 
 class TypingOfTheDeadDecoderTest {
     private val decoder = TypingOfTheDeadDecoder()
-    private val entries = decoder.decodeDictionary("data/S000L010.bin")
+    private val entriesL010 = decoder.decodeDictionary("data/S000L010.bin")
+    private val entriesL020 = decoder.decodeDictionary("data/S000L020.bin")
 
     data class ExpectedEntry(
         val timeGauge: Int,
@@ -19,6 +18,20 @@ class TypingOfTheDeadDecoderTest {
         val phrase: String,
         val keycodes: List<String>
     )
+    
+    @Test
+    fun decodeShu() {
+        val index = 790
+        val entry = entriesL020[index]
+        val expected = ExpectedEntry(
+            timeGauge = 29,
+            phraseOffset = 19324,
+            keycodeOffset = 19332,
+            phrase = "酒乱",
+            keycodes = listOf("syu", "ra", "nn")
+        )
+        assertEntry(entry, expected, "Entry $index")
+    }
     
     @TestFactory
     fun decode() = listOf(
@@ -38,7 +51,7 @@ class TypingOfTheDeadDecoderTest {
         ExpectedEntry(0xe, 0xfd8, 0xfdc, "汗", listOf("a", "se")),
         ExpectedEntry(0xe, 0xfe0, 0xfe8, "アブ", listOf("a", "bu")),
     ).mapIndexed { i, entry -> DynamicTest.dynamicTest("$i") { 
-        assertEntry(entries[i], entry, "Entry $i")
+        assertEntry(entriesL010[i], entry, "Entry $i")
     } }
 
     @Test

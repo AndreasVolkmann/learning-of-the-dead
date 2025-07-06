@@ -9,25 +9,36 @@ class TypingOfTheDeadDecoder {
     private val keycodeMap = mapOf(
         0xA1.toByte() to "0", 0xA2.toByte() to "1", 0xA3.toByte() to "2", 0xA4.toByte() to "3",
         0xA5.toByte() to "4", 0xA6.toByte() to "5", 0xA7.toByte() to "6", 0xA8.toByte() to "7",
-        0xA9.toByte() to "8", 0xAA.toByte() to "9", 0xAB.toByte() to "A", 0xAC.toByte() to "B",
+        0xA9.toByte() to "8", 0xAA.toByte() to "9",
+        
+        0xAB.toByte() to "A", 0xAC.toByte() to "B",
         0xAD.toByte() to "C", 0xAE.toByte() to "D", 0xAF.toByte() to "E", 0xB0.toByte() to "F",
         0xB1.toByte() to "G", 0xB2.toByte() to "H", 0xB3.toByte() to "I", 0xB4.toByte() to "J",
         0xB5.toByte() to "K", 0xB6.toByte() to "L", 0xB7.toByte() to "M", 0xB8.toByte() to "N",
         0xB9.toByte() to "O", 0xBA.toByte() to "P", 0xBB.toByte() to "Q", 0xBC.toByte() to "R",
         0xBD.toByte() to "S", 0xBE.toByte() to "T", 0xBF.toByte() to "U", 0xC0.toByte() to "V",
         0xC1.toByte() to "W", 0xC2.toByte() to "X", 0xC3.toByte() to "Y", 0xC4.toByte() to "Z",
+        
         0xC5.toByte() to "a", 0xC6.toByte() to "b", 0xC7.toByte() to "c", 0xC8.toByte() to "d",
         0xC9.toByte() to "e", 0xCA.toByte() to "f", 0xCB.toByte() to "g", 0xCC.toByte() to "h",
         0xCD.toByte() to "i", 0xCE.toByte() to "j", 0xCF.toByte() to "k", 0xD0.toByte() to "l",
         0xD1.toByte() to "m", 0xD2.toByte() to "n", 0xD3.toByte() to "o", 0xD4.toByte() to "p",
         0xD5.toByte() to "q", 0xD6.toByte() to "r", 0xD7.toByte() to "s", 0xD8.toByte() to "t",
         0xD9.toByte() to "u", 0xDA.toByte() to "v", 0xDB.toByte() to "w", 0xDC.toByte() to "x",
-        0xDD.toByte() to "y", 0xDE.toByte() to "z", 
+        0xDD.toByte() to "y", 0xDE.toByte() to "z",
+        
         0xDF.toByte() to "", 0xE0.toByte() to "", 0xE1.toByte() to "", 0xE2.toByte() to "",
         0xE3.toByte() to "!", 0xE4.toByte() to "_", 0xE5.toByte() to "", 0xE6.toByte() to "",
         0xE7.toByte() to "?", 0xE8.toByte() to "", 0xE9.toByte() to "%", 0xEA.toByte() to " ",
         0xEB.toByte() to "'", 0xEC.toByte() to "$", 0xED.toByte() to "#", 0xEE.toByte() to "@",
         0xEF.toByte() to ".", 0xF0.toByte() to ",", 0xF1.toByte() to "-",
+
+        0x99.toByte() to "っ", // Double consonant marker (っ/ッ)
+        0x01.toByte() to "k", 0x05.toByte() to "y", 0x06.toByte() to "y", 0x08.toByte() to "syu",
+        0x0A.toByte() to "s", 0x0F.toByte() to "c", 0x10.toByte() to "n", 0x12.toByte() to "n",
+        0x1E.toByte() to "m", 0x1F.toByte() to "g", 0x21.toByte() to "g", 0x24.toByte() to "j",
+        0x32.toByte() to "j", 0x3A.toByte() to "r", 0x3C.toByte() to "r", 0x3E.toByte() to "f",
+        0x45.toByte() to "t", 0x47.toByte() to "d",
         
         // Japanese kana mappings
         0x0B.toByte() to "tya", // ちゃ
